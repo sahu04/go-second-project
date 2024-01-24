@@ -92,7 +92,7 @@ jobs:
 
       - name: Run Dockle
         run: |
-          docker run --rm -i hadolint/hadolint < Dockerfile
+          docker run --rm -i hadolint/hadolint < ./Dockerfile
 
       - name: Run Trivy
         run: |
