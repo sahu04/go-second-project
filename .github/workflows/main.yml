@@ -89,6 +89,12 @@ jobs:
             dikshasahu/golang:latest
           build-args: |
             VERSION=main
+      - name: Print directory structure
+        run: ls -R
+
+      - name: Check Dockerfile
+        run: |
+          find . -type f -name "Dockerfile"
 
       - name: Run Dockle
         run: |
