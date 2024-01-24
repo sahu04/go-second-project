@@ -95,6 +95,9 @@ jobs:
       - name: Check Dockerfile
         run: |
           find . -type f -name "Dockerfile"
+      - name: Print Current Directory
+        run: pwd
+
 
       - name: Run Dockle
         run: |
