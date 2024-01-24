@@ -92,15 +92,17 @@ jobs:
       - name: Print directory structure
         run: ls -R
 
-      - name: Check Dockerfile
+      - name: Find Dockerfile
         run: |
-          find . -type f -name "Dockerfile"
-      - name: Print Current Directory
-        run: pwd
-
-
+          DOCKERFILE_PATH=$(find . -type f -name "Dockerfile" | head -n 1)
+          if [ -z "$DOCKERFILE_PATH" ]; then
+           echo "Error: Dockerfile not found."
+          exit 1
+          fi
+          echo "Found Dockerfile at: $DOCKERFILE_PATH"
       - name: Lint Dockerfile
-        run: docker run --rm -i hadolint/hadolint < ./Dockerfile
+        run: docker run --rm -i hadolint/hadolint < "$DOCKERFILE_PATH"
+
 
 
       - name: Run Trivy
