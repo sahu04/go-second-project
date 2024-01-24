@@ -55,8 +55,6 @@ on:
   push:
     branches:
       - master
-    tags:
-      - 'v*'
 
 jobs:
   test:
@@ -72,13 +70,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     steps:
-      - name: Extract Version
-        id: version_step
-        run: |
-          echo "##[set-output name=version;]VERSION=${GITHUB_REF#refs/tags/v}"
-          echo "##[set-output name=version_tag;]$GITHUB_REPOSITORY:${GITHUB_REF#refs/tags/v}"
-          echo "##[set-output name=latest_tag;]$GITHUB_REPOSITORY:latest"
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
 
@@ -88,18 +79,11 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
-         username: ${{ secrets.DOCKER_USER_NAME }}
-         password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+          username: ${{ secrets.DOCKER_USER_NAME }}
+          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
         env:
-         DOCKER_USERNAME: ${{ secrets.DOCKER_USER_NAME }}
-         DOCKER_PASSWORD: ${{ secrets.DOCKER_ACCESS_TOKEN }}
-
-
-      - name: Prepare Reg Names
-        id: prepare_reg_names
-        run: |
-          echo "VERSION_TAG=$(echo ${{ steps.version_step.outputs.version_tag }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-          echo "LASTEST_TAG=$(echo ${{ steps.version_step.outputs.latest_tag  }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USER_NAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_ACCESS_TOKEN }}
 
       - name: Build and push Docker images
         id: docker_build
@@ -107,9 +91,8 @@ jobs:
         with:
           push: true
           tags: |
-           sahu04/go-second-project:${{ env.VERSION_TAG }}
             sahu04/go-second-project:latest
           build-args: |
-           VERSION=${{ steps.version_step.outputs.version }}
+            VERSION=main
 
 
