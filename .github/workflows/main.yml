@@ -73,12 +73,14 @@ jobs:
 
       - name: Build Docker image
         id: docker_build
-        run: docker build -t dikshasahu/golang:latest1 .
+        run:  docker build  . -t golang:1.16 -f ./Dockerfile
+      - name: tag docker image 
+        run: docker tag golang:1.16 dikshasahu/golang:latest
 
       - name: Run Dockle
         uses: goodwithtech/dockle-action@main
         with:
-          image: 'dikshasahu/golang:latest1'
+          image: 'golang:1.16:latest'
           format: 'json'
           output: 'dockle_result.json'
           exit-code: '1'
@@ -106,7 +108,7 @@ jobs:
         with:
           push: true
           tags: |
-            dikshasahu/golang:latest1
+            dikshasahu/golang:latest
           build-args: |
             VERSION=main
 
