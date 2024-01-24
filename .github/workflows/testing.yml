@@ -1,0 +1,27 @@
+name: go-docker
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run Unit Tests
+        run: go test
+
+  check-dockerfile:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Print directory structure
+        run: ls -R
+
+      - name: Check Dockerfile
+        run: |
+          find . -type f -name "Dockerfile"
