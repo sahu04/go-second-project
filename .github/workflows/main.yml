@@ -99,9 +99,9 @@ jobs:
         run: pwd
 
 
-      - name: Run Dockle
-        run: |
-          docker run --rm -i hadolint/hadolint < ./Dockerfile
+      - name: Lint Dockerfile
+        run: docker run --rm -i hadolint/hadolint < ./Dockerfile
+
 
       - name: Run Trivy
         run: |
