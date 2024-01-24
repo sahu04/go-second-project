@@ -73,7 +73,7 @@ jobs:
 
       - name: Build Docker image
         id: docker_build
-        run:  docker build  . -t golang:1.16 -f ./Dockerfile
+        run:  docker build  . -t golang:1.16 -f Dockerfile
       - name: tag docker image 
         run: docker tag golang:1.16 dikshasahu/golang:latest
 
