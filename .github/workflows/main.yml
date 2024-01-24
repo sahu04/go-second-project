@@ -107,9 +107,9 @@ jobs:
         with:
           push: true
           tags: |
-            ${{ env.VERSION_TAG }}
-            ${{ env.LASTEST_TAG }}
+           sahu04/go-second-project:${{ env.VERSION_TAG }}
+            sahu04/go-second-project:latest
           build-args: |
-            VERSION=${{ steps.version_step.outputs.version }}
+           VERSION=${{ steps.version_step.outputs.version }}
 
 
