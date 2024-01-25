@@ -28,15 +28,16 @@ pipeline {
                 script {
                     echo "Running Trivy scan for image: ${DOCKER_IMAGE_NAME}"
                     withCredentials([string(credentialsId: 'trivy_github_token', variable: 'TOKEN')]) {
-                        sh "sed -i 's#token_github#${TOKEN}#g' trivy-image-scan.sh"
-                        sh "sudo trivy --exit-code 1 --severity HIGH,MEDIUM,LOW --format json -o trivy-report.json ${DOCKER_IMAGE_NAME}"
+                        script {
+                            sh "sed -i 's#token_github#${TOKEN}#g' trivy-image-scan.sh"
+                            sh "sudo trivy --exit-code 1 --severity HIGH,MEDIUM,LOW --format json -o trivy-report.json ${DOCKER_IMAGE_NAME}"
+                        }
                     }
                     echo "Trivy scan completed"
                 }
             }
         }
-
-       
+    }
 
     post {
         always {
