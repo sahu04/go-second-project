@@ -27,12 +27,7 @@ pipeline {
             steps {
                 script {
                     echo "Running Trivy scan for image: ${DOCKER_IMAGE_NAME}"
-                    withCredentials([string(credentialsId: 'trivy_github_token', variable: 'TOKEN')]) {
-                        script {
-                            sh "sed -i 's#token_github#${TOKEN}#g' trivy_dockle.sh"
-                            sh "sudo trivy --exit-code 1 --severity HIGH,MEDIUM,LOW --format json -o trivy-report.json ${DOCKER_IMAGE_NAME}"
-                        }
-                    }
+                    sh "trivy --exit-code 1 --severity HIGH,MEDIUM,LOW --format json -o trivy-report.json ${DOCKER_IMAGE_NAME}"
                     echo "Trivy scan completed"
                 }
             }
@@ -47,3 +42,4 @@ pipeline {
         }
     }
 }
+
