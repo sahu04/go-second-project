@@ -3,7 +3,7 @@ pipeline {
     
     environment {
         // Define any environment variables you may need
-        DOCKER_IMAGE_NAME = "tomcat"
+        DOCKER_IMAGE_NAME = "golang"
         DOCKERFILE_PATH = "./Dockerfile"
     }
     
