@@ -23,7 +23,19 @@ pipeline {
                 }
             }
         }
-        
+            stage('Vulnerability Scan - Docker Trivy') {
+      steps {
+        script {
+            echo "Running Trivy scan for image: $dockerImageName"
+            withCredentials([string(credentialsId: 'trivy_github_token', variable: 'TOKEN')]) {
+                sh "sed -i 's#token_github#${TOKEN}#g' trivy-image-scan.sh"
+                sh "sudo trivy --exit-code 1 --severity HIGH,MEDIUM,LOW --format json -o trivy-report.json \"$dockerImageName\""
+            }
+            echo "Trivy scan completed"
+        }
+    }
+}
+
         stage('Push Docker Image') {
             steps {
                 script {
