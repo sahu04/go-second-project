@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
 
@@ -5,6 +6,7 @@ pipeline {
         DOCKERFILE_PATH = "./Dockerfile"
         DOCKER_IMAGE_NAME = ""
         TRIVY_REPORT_PATH = "./trivy-report.json"
+        HTML_REPORT_DIR = "trivy-html-report"
     }
 
     stages {
@@ -29,6 +31,9 @@ pipeline {
                 script {
                     echo "Running Trivy scan for image: ${DOCKER_IMAGE_NAME}"
                     sh "trivy --exit-code 1 --severity HIGH,MEDIUM,LOW --format json -o ${TRIVY_REPORT_PATH} ${DOCKER_IMAGE_NAME}"
+
+                    // Convert Trivy JSON report to HTML using trivy2html
+                    sh "trivy2html -s -f ${TRIVY_REPORT_PATH} -o ${HTML_REPORT_DIR}/index.html"
                 }
             }
         }
@@ -41,9 +46,8 @@ pipeline {
                 archiveArtifacts artifacts: "${TRIVY_REPORT_PATH}", fingerprint: true
 
                 // Publish HTML report
-                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: '.', reportFiles: "${TRIVY_REPORT_PATH}", reportName: 'Trivy Vulnerability Scan Report'])
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: "${HTML_REPORT_DIR}", reportFiles: 'index.html', reportName: 'Trivy Vulnerability Scan Report'])
             }
         }
     }
 }
-
