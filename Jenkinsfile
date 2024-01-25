@@ -12,14 +12,15 @@ pipeline {
             }
         }
         
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    sh "dockerImageName=$(awk 'NR==1 {print $2}' $DOCKERFILE_PATH)"
-                    sh "docker build -t $dockerImageName -f $DOCKERFILE_PATH ."
-                }
-            }
+       stage('Build Docker Image') {
+    steps {
+        script {
+            // Use single quotes to avoid variable substitution
+            sh 'dockerImageName=$(awk ''NR==1 {print $2}'' $DOCKERFILE_PATH)'
+            sh "docker build -t $dockerImageName -f $DOCKERFILE_PATH ."
         }
+    }
+}
         
         stage('Vulnerability Scan - Docker Trivy') {
             steps {
