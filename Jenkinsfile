@@ -28,11 +28,10 @@ pipeline {
            stage('Install Trivy') {
             steps {
                 script {
-                    sh """
-                        wget https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz
-                        tar xvf trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz
-                        sudo mv trivy /usr/local/bin/trivy
-                    """
+                 
+                       sh 'curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.18.3'
+                      sh 'curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl > html.tpl'
+                
                     sh 'trivy --version'
                 }
             }
