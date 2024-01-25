@@ -36,14 +36,7 @@ pipeline {
             }
         }
 
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    sh "docker push ${DOCKER_IMAGE_NAME}"
-                }
-            }
-        }
-    }
+       
 
     post {
         always {
