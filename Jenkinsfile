@@ -16,6 +16,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
+                    // Set dockerImageName as an environment variable
                     DOCKER_IMAGE_NAME = sh(script: "awk 'NR==1 {print \$2}' ${DOCKERFILE_PATH}", returnStdout: true).trim()
                     sh "docker build -t ${DOCKER_IMAGE_NAME} -f ${DOCKERFILE_PATH} ."
                 }
@@ -29,20 +30,14 @@ pipeline {
                     sh "trivy --exit-code 1 --severity HIGH,MEDIUM,LOW --format json -o trivy-report.json ${DOCKER_IMAGE_NAME}"
                 }
             }
-        }
-    }
-
-    post {
-        always {
-            script {
-                sh "docker rmi ${DOCKER_IMAGE_NAME}"
-            }
-        }
-        success {
-            script {
-                archiveArtifacts artifacts: 'trivy-report.json', fingerprint: true
+            post {
+                always {
+                    script {
+                        sh "docker rmi ${DOCKER_IMAGE_NAME}"
+                        archiveArtifacts artifacts: ['trivy-report.json'], fingerprint: true
+                    }
+                }
             }
         }
     }
 }
-
