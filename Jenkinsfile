@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKERFILE_PATH = "./Dockerfile"
         DOCKER_IMAGE_NAME = ""
-        TRIVY_REPORT_PATH = 'trivy-report.json'
+        TRIVY_REPORT_PATH ="trivy-scan-report.json"
     }
 
     stages {
@@ -38,6 +38,7 @@ pipeline {
         always {
             script {
                 sh "docker rmi ${DOCKER_IMAGE_NAME}"
+                archiveArtifacts artifacts: 'trivy-scan-report.json', followSymlinks: false
             }
         }
     }
