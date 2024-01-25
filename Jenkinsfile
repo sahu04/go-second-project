@@ -25,19 +25,18 @@ pipeline {
             }
         }
 
-        stage('Install Trivy') {
+           stage('Install Trivy') {
             steps {
                 script {
-                    sh '''
-                       sudo wget -qO trivy https://github.com/aquasecurity/trivy/releases/latest/download/trivy_$(uname -s)_$(uname -m)
-                       sudo chmod +x trivy
-                       sudo mv trivy /usr/local/bin/
-                    '''
+                    sh """
+                        wget https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz
+                        tar xvf trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz
+                        sudo mv trivy /usr/local/bin/trivy
+                    """
                     sh 'trivy --version'
                 }
             }
         }
-
         stage('Vulnerability Scan - Docker Trivy') {
             steps {
                 script {
