@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/sahu04/flask-app.git'
+                git 'https://github.com/sahu04/go-second-project.git'
             }
         }
 
