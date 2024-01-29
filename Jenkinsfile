@@ -4,6 +4,7 @@ pipeline {
     environment {
         DOCKERFILE_PATH = "./Dockerfile"
         TRIVY_REPORT_PATH = "trivy-scan-report.json"
+         dockerImageName = "" // Define dockerImageName globally
     }
 
     stages {
