@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKERFILE_PATH = "./Dockerfile"
+        DOCKERFILE_PATH = "./Dockerfile" // Dockerfile path 
         TRIVY_REPORT_PATH = "trivy-scan-report.json"
         DOCKLE_REPORT_PATH = "dockle-scan-report.json"
     }
