@@ -32,7 +32,6 @@ pipeline {
                     sh 'sudo chmod o+w /usr/local/bin'
                     sh 'curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.18.3'
                     sh 'curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl > html.tpl'
-
                     sh 'trivy --version'
                 }
             }
@@ -47,7 +46,7 @@ pipeline {
                 }
             }
         }
-        stage('Vulnerability Scan - Docker Trivy') {
+        stage('Scan image for vulnerabilities') {
             steps {
                 script {
                     def dockerImageName = sh(script: "awk 'NR==1 {print \$2}' ${DOCKERFILE_PATH}", returnStdout: true).trim()
@@ -62,7 +61,7 @@ pipeline {
                 script {
                     def dockerImageName = sh(script: "awk 'NR==1 {print \$2}' ${DOCKERFILE_PATH}", returnStdout: true).trim()
                     echo "Running Dockle scan for image: ${dockerImageName}"
-                     sh "export DOCKLE_HOST='unix:///var/run/docker.sock' && dockle -f json -o ${DOCKLE_REPORT_PATH}  --exit-code 1 --exit-level fatal   ${dockerImageName}"
+                     sh "export DOCKLE_HOST='unix:///var/run/docker.sock' && dockle -f json -o ${DOCKLE_REPORT_PATH}  --exit-code 1 --exit-level fatal ${dockerImageName}"
                     
                 }
             }
