@@ -28,7 +28,7 @@ pipeline {
            stage('Install Trivy') {
             steps {
                 script {
-                 
+                        sh 'sudo chmod o+w /usr/local/bin'
                         sh 'curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.18.3'
                         sh 'curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl > html.tpl'
                 
