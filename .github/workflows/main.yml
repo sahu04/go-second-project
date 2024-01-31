@@ -44,79 +44,48 @@
 #           build-args: |
 #             VERSION=main
 
-name: go-docker
+name: trivy-scanning
 
 on:
   push:
-    branches:
-      - master
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  
+
+permissions: write-all
 
 jobs:
-  test:
+  trivy-scanning-job:
+    name: trivy-sec-scan
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      - name: Run Unit Tests
-        run: go test
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      - name: Print current directory
-        run: pwd
-
-      - name: Print workspace contents
-        run: ls -R ${{ github.workspace }}
-
-
-
-      - name: Build Docker image
-        run: docker build . -t golang:1.16 -f Dockerfile
-        working-directory: ${{ github.workspace }}
-
-      - name: tag docker image 
-        run: docker tag golang:1.16 dikshasahu/golang:latest
-
-      - name: Run Dockle
-        uses: goodwithtech/dockle-action@main
+      - name: Run Trivy vulnerability scanner in repo mode
+        uses: aquasecurity/trivy-action@master
         with:
-          image: 'golang:1.16:latest'
-          format: 'json'
-          output: 'dockle_result.json'
-          exit-code: '1'
-          exit-level: 'warn'
-         
+          scan-type: 'fs'
+          ignore-unfixed: true
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'HIGH,CRITICAL'
 
-      - name: Upload Dockle Report
-        uses: actions/upload-artifact@v3
-        if: always()
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v1
         with:
-          name: Dockle-Report
-          path: dockle_result.json
+          sarif_file: 'trivy-results.sarif'
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
+      - name: Build an image from Dockerfile
+        run: |
+          docker build -t docker.io/devops-counsel/py-app:${{ github.sha }} .
+      
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
         with:
-          username: ${{ secrets.DOCKER_USER_NAME }}
-          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USER_NAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_ACCESS_TOKEN }}
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v2.3.0
-        with:
-          push: true
-          tags: |
-            dikshasahu/golang:latest
-          build-args: |
-            VERSION=main
+          image-ref: 'docker.io/devops-counsel/py-app:${{ github.sha }}'
+          format: 'table'
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
 
