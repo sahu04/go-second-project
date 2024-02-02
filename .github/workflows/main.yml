@@ -88,4 +88,18 @@ jobs:
           format: 'table'
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
+          
+        # Install Anchore CLI
+      - name: Install Anchore CLI
+        run: curl -s https://ci-tools.anchore.io/inline_scan-latest | bash
+
+      # Scan Docker image with Anchore Engine
+      - name: Scan Docker image with Anchore Engine
+        run: anchore-cli analyze docker.io/devops-counsel/py-app:${{ github.sha }}
+
+      # Upload Anchore Engine scan results to GitHub Security tab
+      - name: Upload Anchore Engine scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'inline-scan-results.json
 
