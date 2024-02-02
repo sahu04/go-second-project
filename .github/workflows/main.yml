@@ -91,7 +91,7 @@ jobs:
           
         # Install Anchore CLI
       - name: Install Anchore CLI
-        run: curl -s https://ci-tools.anchore.io/inline_scan-latest | bash
+        run: curl -s https://ci-tools.anchore.io/inline_scan-latest | bash -s -- scan
 
       # Scan Docker image with Anchore Engine
       - name: Scan Docker image with Anchore Engine
