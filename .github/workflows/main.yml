@@ -89,17 +89,15 @@ jobs:
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
           
-        # Install Anchore CLI
-      - name: Install Anchore CLI
-        run: curl -s https://ci-tools.anchore.io/inline_scan-latest | bash -s -- scan docker.io/devops-counsel/py-app:${{ github.sha }}
+      - name: Install grype
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
 
-      # Scan Docker image with Anchore Engine
-      - name: Scan Docker image with Anchore Engine
-        run: anchore-cli analyze docker.io/devops-counsel/py-app:${{ github.sha }}
-
-      # Upload Anchore Engine scan results to GitHub Security tab
-      - name: Upload Anchore Engine scan results to GitHub Security tab
+      - name: Run grype vulnerability scan
+        run: grype -o sarif docker.io/devops-counsel/py-app:${{ github.sha }} > grype-results.sarif
+      
+      - name: Upload grype scan results
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: 'inline-scan-results.sarif'
+          sarif_file: 'grype-results.sarif'
 
