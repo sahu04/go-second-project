@@ -33,28 +33,35 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'docker.io/sahu04/go-app:${{ github.sha }}'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
+          format: 'sarif,json'
+          output: 'trivy-results.sarif,trivy-results.json'
+      - name: Upload Report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: Trivy-report
+          path: trivy-results.json
+
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
-
+    
       - name: Run dockle
         uses: goodwithtech/dockle-action@main
         with:
           image: 'docker.io/sahu04/go-app:${{ github.sha }}'
           format: 'json'
-          output: 'result.json'
+          output: 'dockle-result.json'
           exit-code: '0'
       - name: Upload Report
         uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: Report
-          path: result.json
+          name: Dockle-report
+          path: dockle-result.json
 
       - name: Run dockle
         uses: goodwithtech/dockle-action@main
