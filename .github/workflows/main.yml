@@ -19,7 +19,7 @@ jobs:
 
       - name: Build an image from Dockerfile
         run: |
-          docker build -t docker.io/sahu04/flask-app:${{ github.sha }} .  
+          docker build -t docker.io/sahu04/go-app:${{ github.sha }} .  
        
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
