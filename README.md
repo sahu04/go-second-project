@@ -87,7 +87,7 @@ trivy image --scanners vuln --format table $dockerImageName
 trivy image --scanners vuln --format json -o $TRIVY_REPORT_PATH $dockerImageName
 trivy image --scanners vuln --format template --template @./html.tpl -o report.html $dockerImageName
 ```
-#### Security Scan - Dockle:
+### Security Scan - Dockle:
 #### This stage runs a Dockle security scan on a Docker image, capturing potential issues in JSON format and saving them to a designated path. It ensures adherence to best practices and enhances container image security.
 ```
 dockle -f json -o ${DOCKLE_REPORT_PATH} --exit-code 1 --exit-level fatal ${dockerImageName}
