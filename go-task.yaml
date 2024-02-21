@@ -5,9 +5,9 @@ metadata:
 spec:
   params:
     - name: repo-url
-      type: string
+      description: "URL of the Git repository"
     - name: dockerfile-path
-      type: string
+      description: "Path to the Dockerfile"
   steps:
     - name: check-and-delete-repo
       image: alpine
