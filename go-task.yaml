@@ -1,0 +1,31 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: test-go-app
+spec:
+  params:
+    - name: repo-url
+      type: string
+    - name: dockerfile-path
+      type: string
+  steps:
+    - name: check-and-delete-repo
+      image: alpine
+      command: ["sh", "-c"]
+      args: ["if [ -d /workspace/repo ]; then rm -rf /workspace/repo/*; fi"]
+    - name: clone-repo
+      image: alpine/git
+      command: ["git", "clone", "$(params.repo-url)", "/workspace/repo"]
+    - name: run-tests
+      image: golang:1.16
+      workingDir: /workspace/repo
+      command: ["go", "test", "./..."]
+    - name: build-container-image
+      image: gcr.io/kaniko-project/executor:latest
+      workingDir: /workspace/repo
+      command:
+        - /kaniko/executor
+      args:
+        - --dockerfile=$(params.dockerfile-path)
+        - --context=/workspace/repo/
+        - --no-push 
