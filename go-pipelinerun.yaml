@@ -1,12 +1,12 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  name: test-go-app-pipeline-run
+  name: go-app-pipeline-run
 spec:
   pipelineRef:
     name: go-app-pipeline
   params:
     - name: repo-url
-      value: https://github.com/sahu04/go-second-project.git
+      value: "https://github.com/sahu04/go-second-project.git"
     - name: dockerfile-path
-      value: /workspace/repo/Dockerfile
+      value: "/workspace/repo/Dockerfile"
