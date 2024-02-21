@@ -1,0 +1,12 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  name: test-go-app-taskrun
+spec:
+  taskRef:
+    name: test-go-app
+  params:
+    - name: repo-url
+      value: "https://github.com/sahu04/go-second-project.git"
+    - name: dockerfile-path
+      value: "/workspace/repo/Dockerfile"
