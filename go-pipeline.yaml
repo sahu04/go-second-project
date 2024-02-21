@@ -3,12 +3,17 @@ kind: Pipeline
 metadata:
   name: go-app-pipeline
 spec:
+  params:
+    - name: repo-url
+      description: "URL of the Git repository"
+    - name: dockerfile-path
+      description: "Path to the Dockerfile"
   tasks:
     - name: test-go-app
       taskRef:
         name: test-go-app
       params:
         - name: repo-url
-          value: "https://github.com/sahu04/go-second-project.git"
+          value: "$(params.repo-url)"
         - name: dockerfile-path
-          value: "/workspace/repo/Dockerfile"
+          value: "$(params.dockerfile-path)"
