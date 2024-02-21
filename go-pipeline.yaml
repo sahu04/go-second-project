@@ -1,0 +1,14 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: go-app-pipeline
+spec:
+  tasks:
+    - name: test-go-app
+      taskRef:
+        name: test-go-app
+      params:
+        - name: repo-url
+          value: "https://github.com/sahu04/go-second-project.git"
+        - name: dockerfile-path
+          value: "/workspace/repo/Dockerfile"
